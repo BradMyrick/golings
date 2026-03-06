@@ -80,15 +80,13 @@ func WatchCmd(infoFile string) *cobra.Command {
 						RefreshUI()
 						PrintHint(infoFile)
 						color.Green("Hint: 'n' to move to next exercise, 'l' for list of exercises")
-						// redraw whole UI after extra output
 					case 'l':
 						RefreshUI()
 						PrintList(infoFile)
 						color.Green("List of exercises: 'l' to list, 'n' for next")
-
 					case 'q', 3: // 3 = Ctrl+C
 						fmt.Println()
-						color.Green("Bye from kdor/golings")
+						color.Green("Goodbye from golings!")
 						return nil
 					case '\r', '\n':
 						// TODO: ignore Enter in raw mode if i need it
@@ -133,3 +131,4 @@ func WatchEvents(updateF chan<- string) {
 		}
 	}
 }
+
