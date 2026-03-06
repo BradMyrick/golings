@@ -42,21 +42,22 @@ func VerifyCmd(infoFile string) *cobra.Command {
 			}
 
 			for _, exercise := range allExercises {
-				bar.Describe(fmt.Sprintf("Running %s", exercise.Name))
 				result, _ := exercise.Run()
-				bar.Add(1) // nolint
-
-				if result.Err != "" {
+				if result.Exercise.State() == exercises.Pending || result.Err != "" {
 					fmt.Print("\n\n")
 					color.Cyan("Failed to compile the exercise %s\n\n", exercise.Path)
 					color.White("Check the output below: \n\n")
-					color.Red(result.Err)
+					if result.Err != "" {
+						color.Red(result.Err)
+					}
 					color.Red(result.Out)
+					color.Yellow("If you feel stuck, ask a hint by executing `golings hint %s`", exercise.Name)
 					os.Exit(1)
 				}
+				bar.Add(1) // nolint
 			}
 
-			color.Green("Congratulations!!!")
+			color.Green("\n\nCongratulations!!!")
 			color.Green("You passed all the exercises")
 		},
 	}

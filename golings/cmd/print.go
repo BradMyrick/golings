@@ -12,11 +12,22 @@ import (
 )
 
 func PrintHint(infoFile string) {
-	ClearScreen()
 	exercise, err := exercises.NextPending(infoFile)
 	if err != nil {
-		color.Red("Failed to find next exercises")
+		color.Red("Failed to find next exercise")
+		return
 	}
+	fmt.Printf("\nHint for %s:\n", exercise.Name)
+	color.Yellow(exercise.Hint)
+}
+
+func PrintSpecificHint(name string, infoFile string) {
+	exercise, err := exercises.Find(name, infoFile)
+	if err != nil {
+		color.Red("Failed to find exercise: %s", name)
+		return
+	}
+	fmt.Printf("\nHint for %s:\n", exercise.Name)
 	color.Yellow(exercise.Hint)
 }
 
@@ -32,6 +43,16 @@ func PrintList(infoFile string) {
 func RunNextExercise(infoFile string) {
 	ClearScreen()
 
+	exercise, err := exercises.NextPending(infoFile)
+	if err != nil {
+		color.Green("You've completed all exercises! Great job!")
+		return
+	}
+
+	RunExercise(exercise, infoFile)
+}
+
+func RunExercise(exercise exercises.Exercise, infoFile string) {
 	progress, done, total, err := exercises.Progress(infoFile)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -39,39 +60,40 @@ func RunNextExercise(infoFile string) {
 		color.Blue("Progress: %d/%d (%.2f%%)\n\n", done, total, progress*100)
 	}
 
-	if done == total {
-		color.Green("Congratulations!!\n")
-		color.Green("You have completed all %d of the currently available exercises.", total)
-		color.Blue("If you enjoyed working through this introduction to Golang,")
-		color.Blue("please give the github repository a star")
-		color.White("> https://github.com/mauricioabreu/golings <\n\n\n")
-
-		color.Yellow("To quit out of watch, please type `exit` and hit enter:")
-
-		return;
-	}
-
-	exercise, err := exercises.NextPending(infoFile)
-	if err != nil {
-		color.Red("Failed to find next exercises")
-	}
+	fmt.Printf("Current exercise: %s\n\n", exercise.Path)
 
 	result, err := exercise.Run()
 	if err != nil {
-		color.Cyan("Failed to compile the exercise %s\n\n", result.Exercise.Path)
-		color.White("Check the output below: \n\n")
+		color.Red("Testing of %s failed! Please try again. Here is the output:\n", exercise.Path)
+		fmt.Println("")
 		color.Red(result.Err)
 		color.Red(result.Out)
-		color.Yellow("If you feel stuck, ask a hint by executing `golings hint %s`", result.Exercise.Name)
+		fmt.Println("")
+		color.Yellow("If you feel stuck, press 'h' for a hint")
 	} else {
-		color.Green("Congratulations!\n\n")
-		color.Green("Here is the output of your program:\n\n")
+		color.Green("Successfully ran %s!", exercise.Path)
+		fmt.Println("")
 		color.Cyan(result.Out)
-		if result.Exercise.State() == exercises.Pending {
-			color.White("Remove the 'I AM NOT DONE' from the file to keep going\n")
-			color.Red("exercise is still pending")
-		}
+		color.Yellow("\nExercise done! Press 'n' to move to the next one.")
 	}
+
+	fmt.Print("\n[n]ext [h]int [l]ist [q]uit: ")
+}
+
+func MoveToNextAndRun(infoFile string) {
+	current, err := exercises.NextPending(infoFile)
+	if err == nil {
+		exercises.MarkSolved(current.Name)
+	}
+
+	next, err := exercises.NextPending(infoFile)
+	if err != nil {
+		color.Green("\nYou've reached the end! No more exercises.")
+		return
+	}
+
+	ClearScreen()
+	RunExercise(next, infoFile)
 }
 
 func ClearScreen() {

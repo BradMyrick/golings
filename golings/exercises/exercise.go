@@ -2,10 +2,7 @@ package exercises
 
 import (
 	"os"
-	"regexp"
 )
-
-var notDoneRegex = regexp.MustCompile(`(?m)^\s*///?\s*I\s+AM\s+NOT\s+DONE`)
 
 type Exercise struct {
 	Name string
@@ -15,14 +12,11 @@ type Exercise struct {
 }
 
 func (e Exercise) State() State {
-	data, err := os.ReadFile(e.Path)
+	_, err := os.Stat(e.Path)
 	if err != nil {
 		return Pending
 	}
 
-	if notDoneRegex.Match(data) {
-		return Pending
-	}
 	return Done
 }
 
