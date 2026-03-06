@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/mauricioabreu/golings/golings/exercises"
+	"github.com/bradmyrick/golings/golings/exercises"
 	"golang.org/x/term"
 )
 

@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/fatih/color"
-	"github.com/mauricioabreu/golings/golings/exercises"
-	"github.com/mauricioabreu/golings/golings/ui"
+	"github.com/bradmyrick/golings/golings/exercises"
+	"github.com/bradmyrick/golings/golings/ui"
 	"github.com/spf13/cobra"
 )
 

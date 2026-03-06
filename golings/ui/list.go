@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/mauricioabreu/golings/golings/exercises"
+	"github.com/bradmyrick/golings/golings/exercises"
 )
 
 func PrintList(o io.Writer, exs []exercises.Exercise) {
