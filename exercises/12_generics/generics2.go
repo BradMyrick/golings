@@ -1,3 +1,4 @@
+//go:build ignore
 // generics2
 // Make me compile!
 

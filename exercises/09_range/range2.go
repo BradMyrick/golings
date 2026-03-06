@@ -1,3 +1,4 @@
+//go:build ignore
 // range2
 // Make me compile!
 //
@@ -12,6 +13,7 @@ func main() {
 	}
 
 	for := range {
-		fmt.Printf("%s has the %s phone\n", name, phone)
+		fmt.Printf("%s has the %s phone
+", name, phone)
 	}
 }

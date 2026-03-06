@@ -1,3 +1,4 @@
+//go:build ignore
 // structs1
 // Make me compile!
 //

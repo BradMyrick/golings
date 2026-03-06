@@ -1,3 +1,4 @@
+//go:build ignore
 // range1
 // Make me compile!
 //
@@ -9,6 +10,7 @@ func main() {
 	evenNumbers := []int{2, 4, 6, 8, 10}
 
 	for _, v := {
-		fmt.Printf("%d is even\n", v)
+		fmt.Printf("%d is even
+", v)
 	}
 }

@@ -1,3 +1,4 @@
+//go:build ignore
 // slices2
 // Make me compile!
 

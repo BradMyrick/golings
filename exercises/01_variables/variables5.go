@@ -1,3 +1,4 @@
+//go:build ignore
 // variables5
 // Make me compile!
 

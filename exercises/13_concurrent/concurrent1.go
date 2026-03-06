@@ -1,3 +1,4 @@
+//go:build ignore
 // concurrent1
 // Make the tests pass!
 
@@ -35,7 +36,8 @@ func print(buf *bytes.Buffer) {
 		go func(i int) {
 			defer wg.Done()
 			mu.Lock()
-			//fmt.Fprintf(buf, "Hello from goroutine %d!\n", i)
+			//fmt.Fprintf(buf, "Hello from goroutine %d!
+", i)
 			mu.Unlock()
 		}(i)
 	}

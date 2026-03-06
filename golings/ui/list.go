@@ -63,6 +63,6 @@ func PrintInteractiveList(o io.Writer, exs []exercises.Exercise, cursor int, hei
 		sb.WriteString(fmt.Sprintf("%s%-17s%-46s%s\r\n", cursorStr, ex.Name, ex.Path, stateStr))
 	}
 
-	sb.WriteString("\r\nUse 'j'/'k' or up/down arrows to scroll, 'Enter' to select, 'q' to quit list.\r\n")
+	sb.WriteString("\r\nUse 'j'/'k' or up/down arrows to scroll, 'Enter' to select, 'r' to reset, 'q' to quit list.\r\n")
 	fmt.Fprint(o, sb.String())
 }

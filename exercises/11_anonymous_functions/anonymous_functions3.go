@@ -1,3 +1,4 @@
+//go:build ignore
 // anonymous functions3
 // Make me compile!
 

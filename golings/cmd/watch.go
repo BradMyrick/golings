@@ -95,6 +95,12 @@ func WatchCmd(infoFile string) *cobra.Command {
 							inListMode = false
 							ex := listExs[listCursor]
 							RunExercise(ex, infoFile)
+						case 'r':
+							ex := listExs[listCursor]
+							exercises.UnmarkSolved(ex.Name)
+							ClearScreen()
+							_, h := ui.GetTerminalSize()
+							ui.PrintInteractiveList(os.Stdout, listExs, listCursor, h)
 						case 'q':
 							inListMode = false
 							RefreshUI()
@@ -124,6 +130,9 @@ func WatchCmd(infoFile string) *cobra.Command {
 								_, h := ui.GetTerminalSize()
 								ui.PrintInteractiveList(os.Stdout, listExs, listCursor, h)
 							}
+						case 'r':
+							exercises.ResetAll()
+							RunNextExercise(infoFile)
 						case 'q', 3: // 3 = Ctrl+C
 							fmt.Print("\r\n")
 							color.Green("Goodbye from golings!\r\n")

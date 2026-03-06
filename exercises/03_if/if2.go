@@ -1,3 +1,4 @@
+//go:build ignore
 // if2
 // Make me compile!
 

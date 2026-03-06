@@ -1,3 +1,4 @@
+//go:build ignore
 // functions3
 // Make me compile!
 
@@ -11,6 +12,7 @@ func main() {
 
 func call_me(num int) {
 	for n := 0; n <= num; n++ {
-		fmt.Printf("Num is %d\n", n)
+		fmt.Printf("Num is %d
+", n)
 	}
 }
