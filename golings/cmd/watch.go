@@ -8,12 +8,13 @@ import (
 	"os/signal"
 	"path/filepath"
 	"syscall"
-	// commented out until bug below is resolved
-	//"golang.org/x/term"
+
 	"github.com/fatih/color"
 	"github.com/fsnotify/fsnotify"
+	"github.com/mauricioabreu/golings/golings/exercises"
+	"github.com/mauricioabreu/golings/golings/ui"
 	"github.com/spf13/cobra"
-	//"golang.org/x/term"
+	"golang.org/x/term"
 )
 
 func WatchCmd(infoFile string) *cobra.Command {
@@ -21,23 +22,12 @@ func WatchCmd(infoFile string) *cobra.Command {
 		Use:   "watch",
 		Short: "Verify exercises when files are edited",
 		RunE: func(cmd *cobra.Command, args []string) error {
-		/* 
-			THIS causes a bug where the first letter of a new line
-			is printed at the end of the line obove the rest of the message
-			removing the code for oldstate and fd below fixes the issue, 
-			but you must hit enter after making your menu selection.
-		*/
-			
-			// **bug begin**
-			/*
 			fd := int(os.Stdin.Fd())
 			oldState, err := term.MakeRaw(fd)
 			if err != nil {
 				return err
 			}
 			defer term.Restore(fd, oldState)
-			*/
-			// **bug end**
 
 			// Initial run.
 			RunNextExercise(infoFile)
@@ -62,36 +52,83 @@ func WatchCmd(infoFile string) *cobra.Command {
 			sigChan := make(chan os.Signal, 1)
 			signal.Notify(sigChan, syscall.SIGWINCH)
 
+			inListMode := false
+			listCursor := 0
+			var listExs []exercises.Exercise
+
 			for {
 				select {
 				case <-update:
 					// File changed: rerun next exercise.
-					RunNextExercise(infoFile)
+					if !inListMode {
+						RunNextExercise(infoFile)
+					}
 
 				case <-sigChan:
 					// Terminal resized: re-render current state.
-					RefreshUI()
+					if inListMode {
+						ClearScreen()
+						_, h := ui.GetTerminalSize()
+						ui.PrintInteractiveList(os.Stdout, listExs, listCursor, h)
+					} else {
+						RefreshUI()
+					}
 
 				case ch := <-events:
-					switch ch {
-					case 'n':
-						MoveToNextAndRun(infoFile)
-					case 'h':
-						RefreshUI()
-						PrintHint(infoFile)
-						color.Green("Hint: 'n' to move to next exercise, 'l' for list of exercises")
-					case 'l':
-						RefreshUI()
-						PrintList(infoFile)
-						color.Green("List of exercises: 'l' to list, 'n' for next")
-					case 'q', 3: // 3 = Ctrl+C
-						fmt.Println()
-						color.Green("Goodbye from golings!")
-						return nil
-					case '\r', '\n':
-						// TODO: ignore Enter in raw mode if i need it
-					default:
-						//TODO: ignore other keys or optionally show a small message
+					if inListMode {
+						switch ch {
+						case 'j':
+							if listCursor < len(listExs)-1 {
+								listCursor++
+								ClearScreen()
+								_, h := ui.GetTerminalSize()
+								ui.PrintInteractiveList(os.Stdout, listExs, listCursor, h)
+							}
+						case 'k':
+							if listCursor > 0 {
+								listCursor--
+								ClearScreen()
+								_, h := ui.GetTerminalSize()
+								ui.PrintInteractiveList(os.Stdout, listExs, listCursor, h)
+							}
+						case '\r', '\n':
+							inListMode = false
+							ex := listExs[listCursor]
+							RunExercise(ex, infoFile)
+						case 'q':
+							inListMode = false
+							RefreshUI()
+						}
+					} else {
+						switch ch {
+						case 'n':
+							MoveToNextAndRun(infoFile)
+						case 'h':
+							if lastState != nil {
+								lastState.ShowHint = !lastState.ShowHint
+								RefreshUI()
+							}
+						case 'l':
+							exs, err := exercises.List(infoFile)
+							if err == nil {
+								inListMode = true
+								listExs = exs
+								listCursor = 0
+								for i, e := range exs {
+									if e.State() == exercises.Pending {
+										listCursor = i
+										break
+									}
+								}
+								ClearScreen()
+								_, h := ui.GetTerminalSize()
+								ui.PrintInteractiveList(os.Stdout, listExs, listCursor, h)
+							}
+						case 'q', 3: // 3 = Ctrl+C
+							fmt.Print("\r\n")
+							color.Green("Goodbye from golings!\r\n")
+							return nil
+						}
 					}
 				}
 			}
@@ -131,4 +168,3 @@ func WatchEvents(updateF chan<- string) {
 		}
 	}
 }
-

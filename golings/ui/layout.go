@@ -29,6 +29,7 @@ type UIState struct {
 	Total          int
 	TerminalWidth  int
 	TerminalHeight int
+	ShowHint       bool
 }
 
 var (
@@ -137,6 +138,16 @@ func Render(state UIState) string {
 				Width(w).
 				Render("Exercise done! Press 'n' to move to the next one.") + "\n",
 		)
+	}
+
+	if state.ShowHint {
+		doc.WriteString("\n")
+		doc.WriteString(
+			hintStyle.
+				Width(w).
+				Render(state.Exercise.Hint) + "\n",
+		)
+		doc.WriteString("\n")
 	}
 
 	// Menu bar: full width, inner text right-aligned

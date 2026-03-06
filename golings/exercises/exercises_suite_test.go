@@ -16,37 +16,23 @@ func TestExercises(t *testing.T) {
 
 var _ = Describe("Exercises", func() {
 	Describe("Checking exercise state", func() {
-		When("'I AM NOT DONE' comment is still there", func() {
+		AfterEach(func() {
+			os.Remove(".golings-state")
+		})
+
+		When("exercise is not yet solved", func() {
 			It("has the Pending state", func() {
-				file, err := os.CreateTemp("/tmp", "exercise*.go")
-				Expect(err).NotTo(HaveOccurred())
-				_, err = file.Write([]byte(`// exercise1.go
-				// I AM NOT DONE
-				package main
-
-				func main() {
-
-				}
-				`))
-				Expect(err).NotTo(HaveOccurred())
-
-				defer os.Remove(file.Name())
-
-				ex := exercises.Exercise{Path: file.Name()}
+				ex := exercises.Exercise{Name: "unsolved_exercise"}
 
 				Expect(ex.State()).To(Equal(exercises.Pending))
 				Expect(ex.State().String()).To(Equal("Pending"))
 			})
 		})
 
-		When("'I AM NOT DONE' comment is not there", func() {
+		When("exercise is marked as solved", func() {
 			It("has the Done state", func() {
-				file, err := os.CreateTemp("/tmp", "exercise*.go")
-				Expect(err).NotTo(HaveOccurred())
-
-				defer os.Remove(file.Name())
-
-				ex := exercises.Exercise{Path: file.Name()}
+				exercises.MarkSolved("solved_exercise")
+				ex := exercises.Exercise{Name: "solved_exercise"}
 
 				Expect(ex.State()).To(Equal(exercises.Done))
 				Expect(ex.State().String()).To(Equal("Done"))
@@ -93,8 +79,14 @@ var _ = Describe("Exercises", func() {
 		})
 	})
 	Describe("Reporting progress", func() {
+		AfterEach(func() {
+			os.Remove(".golings-state")
+		})
+
 		When("half exercises pending", func() {
 			It("reports 50%% progress", func() {
+				exercises.MarkSolved("pending1")
+
 				progress, done, total, err := exercises.Progress("../fixtures/progress/info.toml")
 
 				Expect(err).NotTo(HaveOccurred())

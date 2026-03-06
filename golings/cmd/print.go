@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/mauricioabreu/golings/golings/exercises"
@@ -36,8 +37,7 @@ func PrintList(infoFile string) {
 	if err != nil {
 		color.Red("Failed to list exercises")
 	}
-	width, _ := ui.GetTerminalSize()
-	ui.PrintList(os.Stdout, exs, width)
+	ui.PrintList(os.Stdout, exs)
 }
 
 func RunNextExercise(infoFile string) {
@@ -69,11 +69,11 @@ func RunExercise(exercise exercises.Exercise, infoFile string) {
 		Total:          total,
 		TerminalWidth:  w,
 		TerminalHeight: h,
+		ShowHint:       false,
 	}
 
 	RefreshUI()
 }
-
 
 func RefreshUI() {
 	if lastState == nil {
@@ -83,9 +83,13 @@ func RefreshUI() {
 	lastState.TerminalWidth = w
 	lastState.TerminalHeight = h
 	ClearScreen()
-	fmt.Print(ui.Render(*lastState))
-}
 
+	out := ui.Render(*lastState)
+	out = strings.ReplaceAll(out, "\r\n", "\n")
+	out = strings.ReplaceAll(out, "\n", "\r\n")
+
+	fmt.Print(out)
+}
 
 var lastState *ui.UIState
 
