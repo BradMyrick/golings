@@ -1,17 +1,16 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
 	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/fatih/color"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/cobra"
+	"golang.org/x/term"
 )
 
 func WatchCmd(infoFile string) *cobra.Command {
@@ -19,38 +18,47 @@ func WatchCmd(infoFile string) *cobra.Command {
 		Use:   "watch",
 		Short: "Verify exercises when files are edited",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			RunNextExercise(infoFile)
-			reader := bufio.NewReader(os.Stdin)
-			update := make(chan string)
+			oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
+			if err != nil {
+				return err
+			}
+			defer term.Restore(int(os.Stdin.Fd()), oldState)
 
+			RunNextExercise(infoFile)
+
+			update := make(chan string)
 			go WatchEvents(update)
 
-			for {
-				go func() {
-					for range update {
-						RunNextExercise(infoFile)
+			events := make(chan byte)
+			go func() {
+				b := make([]byte, 1)
+				for {
+					_, err := os.Stdin.Read(b)
+					if err != nil {
+						return
 					}
-				}()
-
-				cmdString, err := reader.ReadString('\n')
-				if err != nil {
-					fmt.Fprintln(os.Stderr, err)
+					events <- b[0]
 				}
-				cmdStr := strings.TrimSuffix(cmdString, "\n")
+			}()
 
-				switch cmdStr {
-				case "list":
-					PrintList(infoFile)
-				case "hint":
-					PrintHint(infoFile)
-				case "quit":
-					color.Green("Bye by golings o/")
-					os.Exit(0)
-				case "exit":
-					color.Green("Bye by golings o/")
-					os.Exit(0)
-				default:
-					color.Yellow("only list or hint commands are available")
+			for {
+				select {
+				case <-update:
+					RunNextExercise(infoFile)
+				case char := <-events:
+					switch char {
+					case 'n':
+						// For now, just run next exercise.
+						// We'll improve this to only move if current is done.
+						MoveToNextAndRun(infoFile)
+					case 'h':
+						PrintHint(infoFile)
+					case 'l':
+						PrintList(infoFile)
+					case 'q', 3: // 3 is Ctrl+C in raw mode
+						color.Green("\nBye by golings o/")
+						return nil
+					}
 				}
 			}
 		},

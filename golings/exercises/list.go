@@ -3,6 +3,7 @@ package exercises
 import (
 	"errors"
 	"os"
+	"strings"
 
 	"github.com/pelletier/go-toml/v2"
 )
@@ -35,8 +36,10 @@ func NextPending(infoFile string) (Exercise, error) {
 		return Exercise{}, err
 	}
 
+	solved := GetSolved()
+
 	for _, exercise := range allExercises {
-		if exercise.State() == Pending {
+		if !solved[exercise.Name] {
 			return exercise, nil
 		}
 	}
@@ -59,20 +62,46 @@ func Find(exercise string, infoFile string) (Exercise, error) {
 	return Exercise{}, ErrExerciseNotFound
 }
 
+func GetSolved() map[string]bool {
+	solved := make(map[string]bool)
+	data, err := os.ReadFile(".golings-state")
+	if err != nil {
+		return solved
+	}
+	for _, line := range strings.Split(string(data), "\n") {
+		if line != "" {
+			solved[line] = true
+		}
+	}
+	return solved
+}
+
+func MarkSolved(name string) {
+	solved := GetSolved()
+	if solved[name] {
+		return
+	}
+	f, err := os.OpenFile(".golings-state", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+	f.WriteString(name + "\n")
+}
+
 func Progress(infoFile string) (float32, int, int, error) {
 	allExercises, err := List(infoFile)
 	if err != nil {
 		return 0.0, 0, 0, err
 	}
-	done := []Exercise{}
+	solved := GetSolved()
+	totalDone := 0
 	for _, exercise := range allExercises {
-		if exercise.State() == Done {
-			done = append(done, exercise)
+		if solved[exercise.Name] {
+			totalDone++
 		}
 	}
 
-	totalDone := len(done)
 	total := len(allExercises)
-
 	return float32(totalDone) / float32(total), totalDone, total, nil
 }

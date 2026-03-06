@@ -64,7 +64,7 @@ It's pretty awesome and uses the playground so you can play with the exercises w
 
 ## Doing exercises
 
-All the exercises can be found in the directory `golings/exercises/<topic>`. For every topic there is an additional README file with some resources to get you started on the topic. We really recommend that you have a look at them before you start.
+All the exercises can be found in the directory `exercises/<topic>`. They are numbered to follow a recommended learning path. For every topic there may be an additional README file with some resources to get you started. We recommend that you have a look at them before you start.
 
 Now you have the task to fix all the programs. Some of them don't compile, and you need to fix them. Some of them compile, but have tests and you need to write some code to have them all green (these are the `compile` and `test` modes).
 
