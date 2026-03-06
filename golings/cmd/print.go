@@ -32,7 +32,6 @@ func PrintSpecificHint(name string, infoFile string) {
 }
 
 func PrintList(infoFile string) {
-	ClearScreen()
 	exs, err := exercises.List(infoFile)
 	if err != nil {
 		color.Red("Failed to list exercises")
@@ -42,7 +41,6 @@ func PrintList(infoFile string) {
 }
 
 func RunNextExercise(infoFile string) {
-	ClearScreen()
 
 	exercise, err := exercises.NextPending(infoFile)
 	if err != nil {
@@ -76,6 +74,7 @@ func RunExercise(exercise exercises.Exercise, infoFile string) {
 	RefreshUI()
 }
 
+
 func RefreshUI() {
 	if lastState == nil {
 		return
@@ -86,6 +85,7 @@ func RefreshUI() {
 	ClearScreen()
 	fmt.Print(ui.Render(*lastState))
 }
+
 
 var lastState *ui.UIState
 
@@ -101,7 +101,6 @@ func MoveToNextAndRun(infoFile string) {
 		return
 	}
 
-	ClearScreen()
 	RunExercise(next, infoFile)
 }
 
