@@ -1,3 +1,4 @@
+//go:build ignore
 // maps1
 // Make me compile!
 //

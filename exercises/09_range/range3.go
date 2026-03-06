@@ -1,3 +1,4 @@
+//go:build ignore
 // range3
 // Make me compile!
 //

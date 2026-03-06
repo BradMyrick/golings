@@ -1,3 +1,4 @@
+//go:build ignore
 // switch1
 // Make me compile!
 

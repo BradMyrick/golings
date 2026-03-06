@@ -1,3 +1,4 @@
+//go:build ignore
 // functions4
 // Make me compile!
 

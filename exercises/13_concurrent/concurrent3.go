@@ -1,3 +1,4 @@
+//go:build ignore
 // concurrent3
 // Make the tests pass!
 

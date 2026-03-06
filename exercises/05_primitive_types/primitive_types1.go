@@ -1,3 +1,4 @@
+//go:build ignore
 // primitive_types1
 // Make me compile!
 

@@ -157,7 +157,7 @@ func Render(state UIState) string {
 			lipgloss.NewStyle().
 				Width(w). // small inner width so border plus text fits
 				Align(lipgloss.Center).
-				Render("[n]ext [h]int [l]ist [q]uit"),
+				Render("[n]ext [h]int [l]ist [r]eset all [q]uit"),
 		)
 
 	doc.WriteString(menu + "\n")

@@ -89,6 +89,29 @@ func MarkSolved(name string) {
 	f.WriteString(name + "\n")
 }
 
+func ResetAll() error {
+	return os.Remove(".golings-state")
+}
+
+func UnmarkSolved(name string) error {
+	solved := GetSolved()
+	if !solved[name] {
+		return nil
+	}
+	delete(solved, name)
+
+	f, err := os.OpenFile(".golings-state", os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	for k := range solved {
+		f.WriteString(k + "\n")
+	}
+	return nil
+}
+
 func Progress(infoFile string) (float32, int, int, error) {
 	allExercises, err := List(infoFile)
 	if err != nil {
