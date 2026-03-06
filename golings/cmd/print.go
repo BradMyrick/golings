@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/mauricioabreu/golings/golings/exercises"
@@ -32,7 +33,6 @@ func PrintSpecificHint(name string, infoFile string) {
 }
 
 func PrintList(infoFile string) {
-	ClearScreen()
 	exs, err := exercises.List(infoFile)
 	if err != nil {
 		color.Red("Failed to list exercises")
@@ -41,7 +41,6 @@ func PrintList(infoFile string) {
 }
 
 func RunNextExercise(infoFile string) {
-	ClearScreen()
 
 	exercise, err := exercises.NextPending(infoFile)
 	if err != nil {
@@ -56,29 +55,43 @@ func RunExercise(exercise exercises.Exercise, infoFile string) {
 	progress, done, total, err := exercises.Progress(infoFile)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-	} else {
-		color.Blue("Progress: %d/%d (%.2f%%)\n\n", done, total, progress*100)
 	}
 
-	fmt.Printf("Current exercise: %s\n\n", exercise.Path)
+	result, runErr := exercise.Run()
 
-	result, err := exercise.Run()
-	if err != nil {
-		color.Red("Testing of %s failed! Please try again. Here is the output:\n", exercise.Path)
-		fmt.Println("")
-		color.Red(result.Err)
-		color.Red(result.Out)
-		fmt.Println("")
-		color.Yellow("If you feel stuck, press 'h' for a hint")
-	} else {
-		color.Green("Successfully ran %s!", exercise.Path)
-		fmt.Println("")
-		color.Cyan(result.Out)
-		color.Yellow("\nExercise done! Press 'n' to move to the next one.")
+	w, h := ui.GetTerminalSize()
+	lastState = &ui.UIState{
+		Exercise:       exercise,
+		Result:         result,
+		RunError:       runErr,
+		Progress:       float64(progress),
+		Done:           done,
+		Total:          total,
+		TerminalWidth:  w,
+		TerminalHeight: h,
+		ShowHint:       false,
 	}
 
-	fmt.Print("\n[n]ext [h]int [l]ist [q]uit: ")
+	RefreshUI()
 }
+
+func RefreshUI() {
+	if lastState == nil {
+		return
+	}
+	w, h := ui.GetTerminalSize()
+	lastState.TerminalWidth = w
+	lastState.TerminalHeight = h
+	ClearScreen()
+
+	out := ui.Render(*lastState)
+	out = strings.ReplaceAll(out, "\r\n", "\n")
+	out = strings.ReplaceAll(out, "\n", "\r\n")
+
+	fmt.Print(out)
+}
+
+var lastState *ui.UIState
 
 func MoveToNextAndRun(infoFile string) {
 	current, err := exercises.NextPending(infoFile)
@@ -92,7 +105,6 @@ func MoveToNextAndRun(infoFile string) {
 		return
 	}
 
-	ClearScreen()
 	RunExercise(next, infoFile)
 }
 

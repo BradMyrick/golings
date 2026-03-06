@@ -1,9 +1,5 @@
 package exercises
 
-import (
-	"os"
-)
-
 type Exercise struct {
 	Name string
 	Path string
@@ -12,12 +8,11 @@ type Exercise struct {
 }
 
 func (e Exercise) State() State {
-	_, err := os.Stat(e.Path)
-	if err != nil {
-		return Pending
+	solved := GetSolved()
+	if solved[e.Name] {
+		return Done
 	}
-
-	return Done
+	return Pending
 }
 
 type State int

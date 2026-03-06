@@ -39,13 +39,16 @@ var _ = Describe("Commands", func() {
 				})
 			})
 			When("it is compilable but it is pending", func() {
-				It("returns error", func() {
+				// Note: Since we no longer require 'I AM NOT DONE' comments to track state,
+				// compilable but pending exercises will successfully compile and run,
+				// thus returning success (no error).
+				It("returns success", func() {
 					run := cmd.RunCmd("../fixtures/pending1/info.toml")
 					run.SetArgs([]string{"pending1"})
 
 					err := run.Execute()
 
-					Expect(err).To(HaveOccurred())
+					Expect(err).ToNot(HaveOccurred())
 				})
 			})
 			When("it is not compilable", func() {
@@ -69,13 +72,13 @@ var _ = Describe("Commands", func() {
 				})
 			})
 			When("'next' is passed is argument to the command", func() {
-				It("runs the next pending exercise", func() {
+				It("runs the next pending exercise successfully", func() {
 					run := cmd.RunCmd("../fixtures/next/info.toml")
 					run.SetArgs([]string{"next"})
 
 					err := run.Execute()
 
-					Expect(err).To(HaveOccurred())
+					Expect(err).ToNot(HaveOccurred())
 				})
 			})
 		})
