@@ -1,3 +1,13 @@
 dist/
 coverage.out
-.DS_Store.golings-state
+.DS_Store
+.golings-state
+golings-dev
+golings
+/home/brad-agent/Repos/golings/golings
+**/bits
+# Compiled binaries
+golings
+golings-dev
+golings/golings
+**/golings
