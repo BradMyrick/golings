@@ -1,4 +1,4 @@
-module github.com/mauricioabreu/golings
+module github.com/bradmyrick/golings
 
 go 1.26.1
 
