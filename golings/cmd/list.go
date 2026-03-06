@@ -19,7 +19,8 @@ func ListCmd(infoFile string) *cobra.Command {
 				color.Red(err.Error())
 				os.Exit(1)
 			}
-			ui.PrintList(os.Stdout, exs)
+			width, _ := ui.GetTerminalSize()
+			ui.PrintList(os.Stdout, exs, width)
 		},
 	}
 }

@@ -5,7 +5,9 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
+	"syscall"
 
 	"github.com/fatih/color"
 	"github.com/fsnotify/fsnotify"
@@ -41,10 +43,15 @@ func WatchCmd(infoFile string) *cobra.Command {
 				}
 			}()
 
+			sigChan := make(chan os.Signal, 1)
+			signal.Notify(sigChan, syscall.SIGWINCH)
+
 			for {
 				select {
 				case <-update:
 					RunNextExercise(infoFile)
+				case <-sigChan:
+					RefreshUI()
 				case char := <-events:
 					switch char {
 					case 'n':

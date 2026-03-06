@@ -37,7 +37,8 @@ func PrintList(infoFile string) {
 	if err != nil {
 		color.Red("Failed to list exercises")
 	}
-	ui.PrintList(os.Stdout, exs)
+	width, _ := ui.GetTerminalSize()
+	ui.PrintList(os.Stdout, exs, width)
 }
 
 func RunNextExercise(infoFile string) {
@@ -56,29 +57,37 @@ func RunExercise(exercise exercises.Exercise, infoFile string) {
 	progress, done, total, err := exercises.Progress(infoFile)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-	} else {
-		color.Blue("Progress: %d/%d (%.2f%%)\n\n", done, total, progress*100)
 	}
 
-	fmt.Printf("Current exercise: %s\n\n", exercise.Path)
+	result, runErr := exercise.Run()
 
-	result, err := exercise.Run()
-	if err != nil {
-		color.Red("Testing of %s failed! Please try again. Here is the output:\n", exercise.Path)
-		fmt.Println("")
-		color.Red(result.Err)
-		color.Red(result.Out)
-		fmt.Println("")
-		color.Yellow("If you feel stuck, press 'h' for a hint")
-	} else {
-		color.Green("Successfully ran %s!", exercise.Path)
-		fmt.Println("")
-		color.Cyan(result.Out)
-		color.Yellow("\nExercise done! Press 'n' to move to the next one.")
+	w, h := ui.GetTerminalSize()
+	lastState = &ui.UIState{
+		Exercise:       exercise,
+		Result:         result,
+		RunError:       runErr,
+		Progress:       float64(progress),
+		Done:           done,
+		Total:          total,
+		TerminalWidth:  w,
+		TerminalHeight: h,
 	}
 
-	fmt.Print("\n[n]ext [h]int [l]ist [q]uit: ")
+	RefreshUI()
 }
+
+func RefreshUI() {
+	if lastState == nil {
+		return
+	}
+	w, h := ui.GetTerminalSize()
+	lastState.TerminalWidth = w
+	lastState.TerminalHeight = h
+	ClearScreen()
+	fmt.Print(ui.Render(*lastState))
+}
+
+var lastState *ui.UIState
 
 func MoveToNextAndRun(infoFile string) {
 	current, err := exercises.NextPending(infoFile)

@@ -7,6 +7,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/mauricioabreu/golings/golings/exercises"
+	"github.com/mauricioabreu/golings/golings/ui"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/cobra"
 )
@@ -36,28 +37,25 @@ example specific exercise : golings run variables1`,
 				return err
 			}
 
-			result, err := exercise.Run()
+			result, runErr := exercise.Run()
 
 			spinner.Close()
 
-			if err != nil {
-				color.Cyan("Failed to compile the exercise %s\n\n", result.Exercise.Path)
-				color.White("Check the output below: \n\n")
-				color.Red(result.Err)
-				color.Red(result.Out)
-				color.Yellow("If you feel stuck, ask a hint by executing `golings hint %s`", result.Exercise.Name)
-			} else {
-				color.Green("✅ Successfully tested %s!\n\n", result.Exercise.Path)
-				color.Green("Congratulations!\n\n")
-				color.Green("Here is the output of your program:\n\n")
-				color.Cyan(result.Out)
-				if result.Exercise.State() == exercises.Pending {
-					color.White("Remove the 'I AM NOT DONE' from the file to keep going\n")
-					return fmt.Errorf("exercise is still pending")
-				}
+			progress, done, total, _ := exercises.Progress(infoFile)
+			w, h := ui.GetTerminalSize()
+			state := ui.UIState{
+				Exercise:       exercise,
+				Result:         result,
+				RunError:       runErr,
+				Progress:       float64(progress),
+				Done:           done,
+				Total:          total,
+				TerminalWidth:  w,
+				TerminalHeight: h,
 			}
+			fmt.Print(ui.Render(state))
 
-			return err
+			return runErr
 		},
 	}
 }
