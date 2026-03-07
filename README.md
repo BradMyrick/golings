@@ -25,7 +25,7 @@ First, you need to have `go` installed. You can install it by visiting the [Go d
 ### Option 1: GO install
 
 ```sh
-go install github.com/bradmyrick/golings/golings@latest
+go install github.com/bradmyrick/golings/golings@v0.0.1
 ```
 
 Add `go/bin` to your PATH if you want to run golings anywhere in your terminal.
