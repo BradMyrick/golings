@@ -36,8 +36,7 @@ func print(buf *bytes.Buffer) {
 		go func(i int) {
 			defer wg.Done()
 			mu.Lock()
-			//fmt.Fprintf(buf, "Hello from goroutine %d!
-", i)
+			//fmt.Fprintf(buf, "Hello from goroutine %d!\n", i)
 			mu.Unlock()
 		}(i)
 	}
