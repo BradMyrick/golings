@@ -1,4 +1,4 @@
-//go:build ignore
+//go:build golings
 // concurrent1
 // Make the tests pass!
 

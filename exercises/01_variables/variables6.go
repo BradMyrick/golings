@@ -1,4 +1,4 @@
-//go:build ignore
+//go:build golings
 // variables6
 // Make me compile!
 

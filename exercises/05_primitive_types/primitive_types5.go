@@ -1,4 +1,4 @@
-//go:build ignore
+//go:build golings
 // primitive_types5
 // Make me compile!
 

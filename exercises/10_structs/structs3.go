@@ -1,4 +1,4 @@
-//go:build ignore
+//go:build golings
 // structs3
 // Make me compile!
 //
