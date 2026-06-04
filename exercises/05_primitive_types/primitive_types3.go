@@ -8,6 +8,5 @@ import "fmt"
 
 func main() {
 
-	fmt.Printf("Hello, I am %s and live in %s
-", who, country)
+	fmt.Printf("Hello, I am %s and live in %s\n", who, country)
 }
