@@ -15,6 +15,5 @@ type Person struct {
 func main() {
 	// contactDetails := ContactDetails{}
 	person := Person{name: "John", age: 32}
-	fmt.Printf("%s is %d years old and his phone is %s
-", person.name, person.age, person.phone)
+	fmt.Printf("%s is %d years old and his phone is %s\n", person.name, person.age, person.phone)
 }
