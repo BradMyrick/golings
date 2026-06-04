@@ -13,6 +13,5 @@ type Person struct {
 
 func main() {
 	person := Person{firstName: "Maurício", lastName: "Antunes"}
-	fmt.Printf("Person full name is: %s
-", person.FullName()) // here it must output Person full name is: Maurício Antunes
+	fmt.Printf("Person full name is: %s\n", person.FullName()) // here it must output Person full name is: Maurício Antunes
 }
