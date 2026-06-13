@@ -12,7 +12,6 @@ func main() {
 
 func callMe(num) {
 	for n := 0; n <= num; n++ {
-		fmt.Printf("Num is %d
-", n)
+		fmt.Printf("Num is %d\n", n)
 	}
 }
