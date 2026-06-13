@@ -46,10 +46,12 @@ func runTest(e Exercise) (Result, error) {
 		[]byte("package main\nfunc main(){}\n"), 0644); err != nil {
 		return Result{Exercise: e, Err: err.Error()}, err
 	}
+	version := strings.Split(runtime.Version()[2:], ".")
+	modContent := fmt.Sprintf("module golings_exercise\n\ngo %s.%s\n", version[0], version[1])
+
 
 	if err := os.WriteFile(filepath.Join(tmp, "go.mod"),
-							[]byte("module golings_exercise\n\ngo 1.26\n"),
-							0644); err != nil {
+		[]byte(modContent), 0600); err != nil {
 			return Result{Exercise: e, Err: err.Error()}, err
 		}
 
