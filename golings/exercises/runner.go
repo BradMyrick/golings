@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
+	"runtime"
 
 )
 
@@ -43,7 +45,7 @@ func runTest(e Exercise) (Result, error) {
 	}
 	defer os.RemoveAll(tmp)
 	if err := os.WriteFile(filepath.Join(tmp, "main.go"),
-		[]byte("package main\nfunc main(){}\n"), 0644); err != nil {
+		[]byte("package main\nfunc main(){}\n"), 0600); err != nil {
 		return Result{Exercise: e, Err: err.Error()}, err
 	}
 	version := strings.Split(runtime.Version()[2:], ".")
@@ -56,7 +58,7 @@ func runTest(e Exercise) (Result, error) {
 		}
 
 	dest := filepath.Join(tmp, "main_test.go")
-	if err := os.WriteFile(dest, src, 0644); err != nil {
+	if err := os.WriteFile(dest, src, 0600); err != nil {
 		return Result{Exercise: e, Err: err.Error()}, err
 	}
 	cmd := exec.Command("go", "test", "-v", "-race", "-tags=golings")
