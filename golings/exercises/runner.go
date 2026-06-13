@@ -21,6 +21,7 @@ func (e Exercise) Run() (Result, error) {
 	}
 	return runTest(e)
 }
+
 func runCompile(e Exercise) (Result, error) {
 	cmd := exec.Command("go", "run", "-tags=golings", fmt.Sprintf("./%s", e.Path))
 	var stdout, stderr bytes.Buffer
@@ -65,18 +66,6 @@ func runTest(e Exercise) (Result, error) {
 	return Result{Exercise: e, Out: stdout.String(), Err: stderr.String()}, err
 
 }
-
-// func (e Exercise) Run() (Result, error) {
-// 	args := BuildArgs(e)
-// 	cmd := exec.Command("go", args...)
-// 	var stdout, stderr bytes.Buffer
-// 	cmd.Stdout = &stdout
-// 	cmd.Stderr = &stderr
-//
-// 	err := cmd.Run()
-//
-// 	return Result{Exercise: e, Out: stdout.String(), Err: stderr.String()}, err
-// }
 
 func BuildArgs(e Exercise) []string {
 	if e.Mode == "compile" {
