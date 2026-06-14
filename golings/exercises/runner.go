@@ -25,16 +25,26 @@ func (e Exercise) Run() (Result, error) {
 }
 
 func runCompile(e Exercise) (Result, error) {
-	cmd := exec.Command("go", "run", "-tags=golings", fmt.Sprintf("./%s", e.Path))
+	validPath, err := validatePath(e.Path)
+	if err != nil {
+		return Result{Exercise:e, Err: err.Error()}, err
+	}
+	cmd := exec.Command("go", "run", "-tags=golings", validPath)
+
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
-	err := cmd.Run()
+	err = cmd.Run()
 	return Result{Exercise: e, Out: stdout.String(), Err: stderr.String()}, err
 }
 
 func runTest(e Exercise) (Result, error) {
-	src, err := os.ReadFile(e.Path)
+	validPath, err := validatePath(e.Path)
+	if err != nil {
+		return Result{Exercise:e, Err: err.Error()}, err
+	}
+
+	src, err := os.ReadFile(validPath)
 	if err != nil {
 		return Result{Exercise: e, Err: err.Error()}, err
 	}
@@ -71,10 +81,18 @@ func runTest(e Exercise) (Result, error) {
 
 }
 
-func BuildArgs(e Exercise) []string {
-	if e.Mode == "compile" {
-		return []string{"run", "-tags=golings", fmt.Sprintf("./%s", e.Path)}
+func validatePath(path string) (string, error) {
+	exerciseBase, err := filepath.Abs("exercises")
+	if err != nil {
+		return "", fmt.Errorf("failed to get exercises base path: %w", err)
 	}
-	return []string{"test", "-v", "-race", "-tags=golings", fmt.Sprintf("./%s", e.Path)}
+	cleanPath := filepath.Clean(path)
+	absPath, err := filepath.Abs(cleanPath)
+	if err != nil {
+		return "", fmt.Errorf("failed to get absolute path: %w", err)
+	}
+	if !strings.HasPrefix(absPath, exerciseBase+string(filepath.Separator)) {
+		return "", fmt.Errorf("path traversal attempt blocked %s", path)
+	}
+	return absPath, nil
 }
-
