@@ -1,4 +1,4 @@
-//go:build ignore
+//go:build golings
 package main
 
 import "fmt"

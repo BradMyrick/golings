@@ -1,4 +1,4 @@
-//go:build ignore
+//go:build golings
 // arrays2
 // Make me compile!
 
