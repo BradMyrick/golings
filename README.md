@@ -51,11 +51,17 @@ golings watch
  * l: Open the interactive list view to scroll and select exercises.
  * q: Quit.
 ## Contributing
-See CONTRIBUTING.md
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
+
 ## Contributors
-A massive thank you to everyone who has helped make golings better!
- * @MrSloth-dev
+
+A massive thank you to everyone who has helped make `golings` better! 
+
+- [@MrSloth-dev](https://github.com/MrSloth-dev)
+
 ## Other 'lings'
- * rustlings
- * ziglings
-```
+
+* [rustlings](https://github.com/rust-lang/rustlings)
+* [ziglings](https://github.com/ratfactor/ziglings)
+* [soliditylings]](https://github.com/bradmyrick/soliditylings)
