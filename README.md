@@ -25,45 +25,37 @@ First, you need to have `go` installed. You can install it by visiting the [Go d
 ### Option 1: GO install
 
 ```sh
-go install github.com/bradmyrick/golings/golings@v0.0.1
+go install [github.com/bradmyrick/golings/golings@v0.0.1](https://github.com/bradmyrick/golings/golings@v0.0.1)
+
 ```
-
-Add `go/bin` to your PATH if you want to run golings anywhere in your terminal.
-
+Add go/bin to your PATH if you want to run golings anywhere in your terminal.
 ### Option 2: DevContainer
-
-1. Clone the repository and open it in VSCode.
-2. You will be prompted to reopen the code in a devcontainer.
-3. Open a new terminal and run `golings watch`.
-
+ 1. Clone the repository and open it in VSCode.
+ 2. You will be prompted to reopen the code in a devcontainer.
+ 3. Open a new terminal and run golings watch.
 ## Doing exercises
-
-All the exercises can be found in the directory `exercises/<topic>`.
-
+All the exercises can be found in the directory exercises/<topic>.
 Clone the repository:
-
 ```sh
-git clone https://github.com/bradmyrick/golings.git
+git clone [https://github.com/bradmyrick/golings.git](https://github.com/bradmyrick/golings.git)
+
 ```
-
-To run the exercises in the recommended order while taking advantage of fast feedback loop, use the _watch_ command:
-
+To run the exercises in the recommended order while taking advantage of fast feedback loop, use the *watch* command:
 ```sh
 golings watch
+
 ```
-
 ### Key Commands in Watch Mode:
-- `n`: Move to the next pending exercise.
-- `h`: Toggle hint for the current exercise.
-- `l`: Open the interactive list view to scroll and select exercises.
-- `q`: Quit.
-
+ * n: Move to the next pending exercise.
+ * h: Toggle hint for the current exercise.
+ * l: Open the interactive list view to scroll and select exercises.
+ * q: Quit.
 ## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md)
-
-## Other 'lings
-
-* [rustlings](https://github.com/rust-lang/rustlings)
-* [ziglings](https://github.com/ratfactor/ziglings)
-
+See CONTRIBUTING.md
+## Contributors
+A massive thank you to everyone who has helped make golings better!
+ * @MrSloth-dev
+## Other 'lings'
+ * rustlings
+ * ziglings
+```
