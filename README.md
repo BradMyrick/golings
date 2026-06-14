@@ -64,4 +64,4 @@ A massive thank you to everyone who has helped make `golings` better!
 
 * [rustlings](https://github.com/rust-lang/rustlings)
 * [ziglings](https://github.com/ratfactor/ziglings)
-* [soliditylings]](https://github.com/bradmyrick/soliditylings)
+* [soliditylings](https://github.com/bradmyrick/soliditylings)
